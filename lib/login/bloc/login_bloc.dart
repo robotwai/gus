@@ -34,16 +34,16 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
   }
 
   _onCodeChangedEvent(CodeChangedEvent event,Emitter<LoginState> emit){
-    if(state.code.isNotEmpty){
+    if(state.code.isEmpty){
       emit(state.copyWith(status: LoginStatus.codeError,code: event.code));
     }else{
-      emit(state.copyWith(status: LoginStatus.codeError,code: event.code));
+      emit(state.copyWith(code: event.code));
     }
   }
 
   _onPhoneChangedEvent(PhoneChangedEvent event,Emitter<LoginState> emit){
-    if(state.code.isNotEmpty){
-      emit(state.copyWith(status: LoginStatus.codeError,phone: event.phone));
+    if(state.phone.isEmpty){
+      emit(state.copyWith(phone: event.phone));
     }else{
       emit(state.copyWith(status: LoginStatus.phoneError,phone: event.phone));
     }
@@ -64,7 +64,9 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     }else{
       emit(state.copyWith(status: LoginStatus.submitProgress));
       await Future.delayed(Duration(seconds: 2),(){});
-      emit(state.copyWith(status: LoginStatus.submitFailed));
+      if(!isClosed){
+        emit(state.copyWith(status: LoginStatus.submitFailed));
+      }
     }
   }
 

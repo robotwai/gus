@@ -12,6 +12,7 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
   GlobalBloc() : super(GlobalState(User())) {
     on<DevicesStateChanged>(_onDeviceTypeChange);
     on<LoginSuccess>(_onLoginSuccess);
+    on<Logout>(_onLogout);
     init();
     // ignore: invalid_use_of_visible_for_testing_member
   }
@@ -31,6 +32,10 @@ class GlobalBloc extends Bloc<GlobalEvent, GlobalState> {
 
   _onLoginSuccess(LoginSuccess event, Emitter<GlobalState> emit){
     userInfo = event.userinfo;
+    emit(GlobalState(event.userinfo,));
+  }
+
+  _onLogout(Logout event, Emitter<GlobalState> emit){
     emit(GlobalState(event.userinfo,));
   }
 

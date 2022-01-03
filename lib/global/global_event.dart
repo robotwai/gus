@@ -25,5 +25,13 @@ class LoginSuccess extends GlobalEvent{
   List<Object> get props => [userinfo];
 }
 
+class Logout extends GlobalEvent{
+  final User userinfo;
+  Logout(this.userinfo);
+
+  @override
+  List<Object> get props => [userinfo];
+}
+
 
 enum DeviceType{phone,pda}

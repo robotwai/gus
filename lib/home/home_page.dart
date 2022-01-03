@@ -2,6 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_gus/detail/detail_page.dart';
 import 'package:flutter_gus/global/global_bloc.dart';
+import 'package:flutter_gus/global/user.dart';
 import 'package:provider/src/provider.dart';
 
 class HomePage extends StatelessWidget{
@@ -20,7 +21,12 @@ class HomePage extends StatelessWidget{
               children: [
                 state.deviceType==DeviceType.phone?Text('Home Phone'):Text('Home PDA'),
                 GestureDetector(
-                  child:  Text('change type'),
+                  child:  Container(
+                    color: Colors.red,
+                    width: 100,
+                    height: 100,
+                    child: Text('change type'),
+                  ),
                   onTap: (){
                     context.read<GlobalBloc>().add(DevicesStateChanged(state.deviceType==DeviceType.phone?DeviceType.pda:DeviceType.phone));
                   },
@@ -36,6 +42,19 @@ class HomePage extends StatelessWidget{
                     Navigator.of(context).push(MaterialPageRoute(builder: (c,){
                       return DetailPage();
                     }));
+                  },
+                ),
+                GestureDetector(
+                  child:  Container(
+                    color: Colors.red,
+                    width: 100,
+                    height: 100,
+                    child: Text('logout'),
+                  ),
+                  onTap: (){
+                    User user = User();
+                    user.status = UserStatus.unLogin;
+                    context.read<GlobalBloc>().add(Logout(user));
                   },
                 )
               ],

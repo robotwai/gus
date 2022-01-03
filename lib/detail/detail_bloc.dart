@@ -7,7 +7,10 @@ class DetailBloc extends CommonBloc{
   @override
   loadData() async{
     await Future.delayed(Duration(seconds: 2),(){});
-    emit(CommonState(pageStatus: isFirst?PageStatus.Failed:PageStatus.Success,data: 'success'));
-    isFirst = false;
+    if(!isClosed){
+      // ignore: invalid_use_of_visible_for_testing_member
+      emit(CommonState(pageStatus: isFirst?PageStatus.Failed:PageStatus.Success,data: 'success'));
+      isFirst = false;
+    }
   }
 }
