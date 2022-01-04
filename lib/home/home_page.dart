@@ -16,48 +16,54 @@ class HomePage extends StatelessWidget{
       body: BlocBuilder<GlobalBloc,GlobalState>(
         buildWhen: (previous, current) => previous.deviceType != current.deviceType,
         builder: (context,state){
-          return Center(
-            child: Column(
-              children: [
-                state.deviceType==DeviceType.phone?Text('Home Phone'):Text('Home PDA'),
-                GestureDetector(
-                  child:  Container(
-                    color: Colors.red,
-                    width: 100,
-                    height: 100,
-                    child: Text('change type'),
+          return Container(
+            color: state.deviceType==DeviceType.phone?Colors.yellow:Colors.white,
+            child: Center(
+              child: Column(
+                children: [
+                  state.deviceType==DeviceType.phone?Text('Home Phone'):Text('Home PDA'),
+                  GestureDetector(
+                    child:  Container(
+                      color: Colors.red,
+                      margin: EdgeInsets.all(30),
+                      width: 100,
+                      height: 100,
+                      child: Text('change type'),
+                    ),
+                    onTap: (){
+                      context.read<GlobalBloc>().add(DevicesStateChanged(state.deviceType==DeviceType.phone?DeviceType.pda:DeviceType.phone));
+                    },
                   ),
-                  onTap: (){
-                    context.read<GlobalBloc>().add(DevicesStateChanged(state.deviceType==DeviceType.phone?DeviceType.pda:DeviceType.phone));
-                  },
-                ),
-                GestureDetector(
-                  child:  Container(
-                    color: Colors.red,
-                    width: 100,
-                    height: 100,
-                    child: Text('jump to detail'),
+                  GestureDetector(
+                    child:  Container(
+                      color: Colors.red,
+                      width: 100,
+                      height: 100,
+                      margin: EdgeInsets.all(30),
+                      child: Text('jump to detail'),
+                    ),
+                    onTap: (){
+                      Navigator.of(context).push(MaterialPageRoute(builder: (c,){
+                        return DetailPage();
+                      }));
+                    },
                   ),
-                  onTap: (){
-                    Navigator.of(context).push(MaterialPageRoute(builder: (c,){
-                      return DetailPage();
-                    }));
-                  },
-                ),
-                GestureDetector(
-                  child:  Container(
-                    color: Colors.red,
-                    width: 100,
-                    height: 100,
-                    child: Text('logout'),
-                  ),
-                  onTap: (){
-                    User user = User();
-                    user.status = UserStatus.unLogin;
-                    context.read<GlobalBloc>().add(Logout(user));
-                  },
-                )
-              ],
+                  GestureDetector(
+                    child:  Container(
+                      color: Colors.red,
+                      width: 100,
+                      height: 100,
+                      margin: EdgeInsets.all(30),
+                      child: Text('logout'),
+                    ),
+                    onTap: (){
+                      User user = User();
+                      user.status = UserStatus.unLogin;
+                      context.read<GlobalBloc>().add(Logout(user));
+                    },
+                  )
+                ],
+              ),
             ),
           );
         },

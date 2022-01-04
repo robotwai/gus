@@ -5,7 +5,7 @@ class LoginState extends Equatable {
   final String code;
   final LoginStatus status;
   final int time;
-  LoginState({this.phone = '',  this.code='', this.status = LoginStatus.initial,this.time =0});
+  LoginState({this.phone = '',  this.code='', this.status = LoginStatus.disSend,this.time =0});
 
   LoginState copyWith({
     LoginStatus? status,
