@@ -31,6 +31,14 @@ class SendCodeEvent extends LoginEvent{
 
 }
 
+class SendCodeTimeEvent extends LoginEvent{
+  final int time;
+  const SendCodeTimeEvent(this.time);
+
+  @override
+  List<Object> get props => [time];
+}
+
 class LoginSubmitEvent extends LoginEvent{
 
   const LoginSubmitEvent();

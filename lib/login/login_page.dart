@@ -81,7 +81,6 @@ class _UsernameInput extends StatelessWidget {
               context.read<LoginBloc>().add(PhoneChangedEvent(username)),
           decoration: InputDecoration(
             labelText: 'username',
-            errorText: state.status == LoginStatus.phoneError ? 'invalid username' : null,
           ),
         );
       },
@@ -102,7 +101,6 @@ class _PasswordInput extends StatelessWidget {
           obscureText: true,
           decoration: InputDecoration(
             labelText: 'password',
-            errorText: state.status == LoginStatus.codeError ? 'invalid password' : null,
           ),
         );
       },
@@ -121,9 +119,9 @@ class _LoginButton extends StatelessWidget {
             : ElevatedButton(
           key: const Key('loginForm_continue_raisedButton'),
           child: const Text('Login'),
-          onPressed: (){
+          onPressed: state.status!=LoginStatus.disSubmit&&state.status!=LoginStatus.disSend?(){
             context.read<LoginBloc>().add(const LoginSubmitEvent());
-          },
+          }:null,
         );
       },
     );
@@ -134,16 +132,14 @@ class _SendCodeButton extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return BlocBuilder<LoginBloc, LoginState>(
-      buildWhen: (previous, current) => previous.status != current.status,
+      buildWhen: (previous, current) => previous.time != current.time || previous.status != current.status,
       builder: (context, state) {
-        return state.status == LoginStatus.codeSent
-            ? const CircularProgressIndicator()
-            : ElevatedButton(
+        return  ElevatedButton(
           key: const Key('loginForm_continue_raisedButton'),
-          child: const Text('Send Code'),
-          onPressed: (){
+          child:  Text(state.time==0?'Send Code':'Wait Time ${state.time}'),
+          onPressed: state.status!=LoginStatus.disSend?(){
             context.read<LoginBloc>().add(const SendCodeEvent());
-          },
+          }:null,
         );
       },
     );

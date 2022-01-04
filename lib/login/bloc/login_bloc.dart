@@ -18,34 +18,45 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
     on<PhoneChangedEvent>(_onPhoneChangedEvent);
     on<LoginSubmitEvent>(_onLoginSubmitEvent);
   }
-
+  ///声明变量
 
   _onSendCodeEvent(SendCodeEvent event,Emitter<LoginState> emit) async{
-    if(state.status == LoginStatus.codeSent){
+    if(state.time!=0){
       return;
     }
     if(state.phone.isNotEmpty){
-      emit(state.copyWith(status: LoginStatus.codeSent));
-      await Future.delayed(Duration(seconds: 10),(){});
-      emit(state.copyWith(status: LoginStatus.initial));
-    }else{
-      emit(state.copyWith(status: LoginStatus.phoneError));
+      int curentTimer = 10;
+
+      while(curentTimer>0){
+        await Future.delayed(Duration(seconds: 1));
+        curentTimer -- ;
+        emit(state.copyWith(time: curentTimer));
+      }
     }
   }
 
   _onCodeChangedEvent(CodeChangedEvent event,Emitter<LoginState> emit){
-    if(state.code.isEmpty){
-      emit(state.copyWith(status: LoginStatus.codeError,code: event.code));
+    if(event.code.isEmpty||state.phone.isEmpty){
+      if(state.phone.isEmpty){
+        emit(state.copyWith(status: LoginStatus.disSend,code: event.code));
+      }else{
+        emit(state.copyWith(status: LoginStatus.disSubmit,code: event.code));
+      }
     }else{
-      emit(state.copyWith(code: event.code));
+      emit(state.copyWith(code: event.code,status: LoginStatus.initial));
     }
   }
 
+
   _onPhoneChangedEvent(PhoneChangedEvent event,Emitter<LoginState> emit){
-    if(state.phone.isEmpty){
-      emit(state.copyWith(phone: event.phone));
+    if(state.code.isEmpty||event.phone.isEmpty){
+      if(event.phone.isEmpty){
+        emit(state.copyWith(status: LoginStatus.disSend,phone: event.phone));
+      }else{
+        emit(state.copyWith(status: LoginStatus.disSubmit,phone: event.phone));
+      }
     }else{
-      emit(state.copyWith(status: LoginStatus.phoneError,phone: event.phone));
+      emit(state.copyWith(phone: event.phone,status: LoginStatus.initial));
     }
   }
 
@@ -55,10 +66,7 @@ class LoginBloc extends Bloc<LoginEvent, LoginState> {
       emit(state.copyWith(status: LoginStatus.submitProgress));
 
       await Future.delayed(Duration(seconds: 2),(){});
-      // emit(state.copyWith(status: LoginStatus.submitSuccess));
-      // ignore: invalid_use_of_visible_for_testing_member
       emit(state.copyWith(status: LoginStatus.initial));
-      // globalBloc.emit(GlobalState(userInfo: User(phone: state.phone,status: UserStatus.login,id: '23')));
       globalBloc.add(LoginSuccess(User(phone: state.phone,status: UserStatus.login,id: '23')));
 
     }else{
